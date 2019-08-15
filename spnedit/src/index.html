@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Spnedit</title>
+  <base href="/">
+  <script type="text/javascript" src="/assets/v/tinymce/v4_1_2/tinymce/tinymce.min.js" charset="utf-8"></script>
+  <script>
+     window.SpnEditBlockConfig = {
+           mainAreaId: "SpnEditMainBlock",
+           moreAreaId: "SpnEditMoreBlock",
+           textAreaId: "spnEditTextArea",
+           getContent: function(){
+               tinymce.triggerSave();
+               return document.getElementById("spnEditTextAreaData").value;
+           },
+           setContent: function(content) {
+               document.getElementById("spnEditTextAreaData").value = content;
+               var area = tinymce.get("spnEditTextAreaData");
+               if (area) {
+                  area.setContent(content); 
+               } else {
+                  console.log("No editor",tinymce.editors);
+               }
+           }
+     };
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/spninit.css" type="text/css" />
+  <link rel="stylesheet" href="assets/v/tinymce/v4_1_2/tinymce/skins/lightgray/skin.min.css" type="text/css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <textarea id="SpnEditMainBlock" style="display:none">
+            <html><h3>Was und wann hast du vor?</h3></html>
+    </textarea>
+    <textarea id="SpnEditMoreBlock" style="display:none">
+            {
+                "title": "Main",
+                "kids": [
+                     {
+                         "title": "Matthäus",
+                         "info": "<html><h3>Evangelium von Matthäus</h3></html>",
+                         "kids": [
+                              {
+                                 "title": "Kapitel 28",
+                                 "info": "Jesu Auferstehung, Der Missionsbefehl",
+                                 "kids": [
+                                     {
+                                          "title": "Vers 1",
+                                          "info": "Als aber der Sabbat vorüber war und der erste Tag der Woche anbrach, kamen Maria Magdalena und die andere Maria, um nach dem Grab zu sehen."  
+                                     },
+                                     {
+                                           "title": "Vers 2",
+                                           "info": "Und siehe, es geschah ein großes Erdbeben. Denn ein Engel des Herrn kam vom Himmel herab, trat hinzu und wälzte den Stein weg und setzte sich darauf."
+                                     },
+                                     {
+                                           "title": "Vers 3",
+                                           "info": "Seine Erscheinung war wie der Blitz und sein Gewand weiß wie der Schnee."
+                                     },
+                                     {
+                                           "title": "Vers 4",
+                                           "info": "Seine Erscheinung war wie der Blitz und sein Gewand weiß wie der Schnee."
+                                     }
+                                 ]   
+                              }
+                         ]
+                     },
+                     {
+                         "title": "Lukas",
+                         "info": "<html><h3>Evangelium von Lukas</h3></html>",
+                         "kids": [
+                         ]
+                     }
+                ] 
+           }
+    </textarea>
+  <div style="max-width:1000px;background-color:yellow;margin:auto;border-left:2px solid #808000;border-right:2px solid #808000;border-top:2px solid #808000;padding-top:20px;">
+   <spn-edit-header></spn-edit-header>
+   <div id="spnEditTextArea" style="width:800px;height:431px;">
+     <form >   
+      <textarea id="spnEditTextAreaData" class="FullFeatureTextEditor" style="width:800px;height:290px;margin:0px auto;display:block">Was magst du?</textarea>
+     </form>
+   </div>  
+  <spn-edit-footer></spn-edit-footer>
+  <div style="height:40px;background-color:green;border-top:1px solid brown;text-align:center">
+       <button onclick="SpnEditMainSaver()">Save</button> 
+  </div> 
+  </div>
+<script>
+tinymce.init({
+    selector: "textarea.FullFeatureTextEditor",
+    toolbar: "undo redo | styleselect fontselect fontsizeselect | bold italic  underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor | spellchecker",
+    plugins : 'advlist anchor autolink charmap code emoticons fullpage fullscreen hr image insertdatetime link lists media nonbreaking noneditable preview print searchreplace table textcolor visualblocks visualchars spellchecker',
+    relative_urls: false,
+    convert_urls: false,
+    file_browser_callback: function(field_name, url, type, win) { 
+        dvfiler_dvelem = win.document.getElementById(field_name);
+	dvfileFireStart(type);
+    },
+    noneditable_leave_contenteditable: true
+ });
+</script>
+</body>
+</html>

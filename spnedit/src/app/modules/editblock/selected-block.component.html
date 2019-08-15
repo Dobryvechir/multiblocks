@@ -1,0 +1,41 @@
+<ng-container *ngIf="block">
+   <div class="selected-block _level{{block.level}}">
+      <div class="selected-block__icon _blue" (click)="_blockTitleEdit=!_blockTitleEdit">
+         <svg xmlns="http://www.w3.org/2000/svg" height="8" width="14" version="1.1" viewBox="0 0 14 8">
+            <path d="m0.71686 0.72675 6.2847 5.8368 6.2844-5.8368" stroke-width="2.1022px" fill="none" />
+         </svg>
+      </div>
+      <div>
+         <ng-container *ngIf="_blockTitleEdit; else blockTitleReadOnly">
+            <input [(ngModel)]="block.title" placeholder="Block title" value="{{block.title}}" />
+         </ng-container>
+         <ng-template #blockTitleReadOnly>
+             <div (click)="_blockTitleEdit=true;" style="height:24px;">
+                {{block.title}}
+              </div>
+         </ng-template> 
+      </div>
+      <div (click)="_createBlock(block.id)" class="selected-block__icon _green">
+         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+            y="0px" viewBox="0 0 12 12" xml:space="preserve">
+            <polygon points="12,5 7,5 7,0 5,0 5,5 0,5 0,7 5,7 5,12 7,12 7,7 12,7 " />
+         </svg>
+         <span>
+            Create new block
+         </span>
+      </div>
+      <div (click)="_deleteBlock()" *ngIf="block.level" class="selected-block__icon _red">
+         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+            y="0px" viewBox="0 0 16 16" xml:space="preserve">
+            <g>
+               <g>
+                  <polygon points="16,2 14,0 8,6 2,0 0,2 6,8 0,14 2,16 8,10 14,16 16,14 10,8 		" />
+               </g>
+            </g>
+         </svg>
+         <span>Delete</span>
+      </div>
+   </div>
+   <ddv-confirm-dialog [title]="'Block ' + block.title" message="Do you really want to delete this block?"
+      [buttons]="['Delete','Cancel']" (buttonConfirm)="_deleteBlockInner($event)"></ddv-confirm-dialog>
+</ng-container>

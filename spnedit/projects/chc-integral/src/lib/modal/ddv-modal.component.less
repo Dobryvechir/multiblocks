@@ -1,0 +1,68 @@
+.ddv-modal {
+    /* modal container fixed across whole screen */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    /* z-index must be higher than .ddv-modal-background */
+    z-index: 1000;
+    
+    /* enables scrolling for tall modals */
+    overflow: auto;
+
+}
+.ddv-modal-body {
+    border: 0 solid #9e9e9e;
+    zoom: 1;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    vertical-align: top;
+    text-decoration: none;
+    color: #333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    text-shadow: none;
+    float: none;
+    box-sizing: content-box;
+    direction: ltr;
+    max-width: none;
+    white-space: nowrap;
+    cursor: inherit;
+    -webkit-tap-highlight-color: transparent;
+    line-height: normal;
+    font-weight: normal;
+    text-align: left;
+    display: block;
+    opacity: 1; 
+    border-radius: 6px;
+    -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    background: transparent;
+    background: #fff;
+    position: fixed;
+    z-index: 65536;
+    left: 96px;
+    top: 139.5px;
+    -webkit-transition: opacity 150ms ease-in;
+    transition: opacity 150ms ease-in;
+}
+
+.ddv-modal-background {
+    /* modal background fixed across whole screen */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    /* semi-transparent black  */
+    background-color: #000;
+    opacity: 0.75;
+    
+    /* z-index must be below .ddv-modal and above everything else  */
+    z-index: 900;
+}
