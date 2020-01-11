@@ -10,7 +10,7 @@ import { ConfirmDialogComponent } from "chc-integral";
 })
 export class SelectedBlockComponent implements OnInit {
   @Input() block: SpnEditBlocks;
-  @ViewChild(ConfirmDialogComponent) confirmDialog: ConfirmDialogComponent;
+  @ViewChild(ConfirmDialogComponent, {static: false}) confirmDialog: ConfirmDialogComponent;
   _blockTitleEdit: boolean = false;
 
   constructor(private spnEditControl: SpnEditControl) {

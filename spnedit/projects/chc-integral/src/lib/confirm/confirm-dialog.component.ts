@@ -18,7 +18,7 @@ export class ConfirmDialogComponent {
     @Output()
     buttonConfirm = new EventEmitter<number>();
 
-    @ViewChild(DialogModalComponent) dialogModal: DialogModalComponent;
+    @ViewChild(DialogModalComponent, {static: false}) dialogModal: DialogModalComponent;
 
     openModal() {
         this.dialogModal.openModal();
