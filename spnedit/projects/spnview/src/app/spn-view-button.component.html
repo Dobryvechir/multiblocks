@@ -1,0 +1,11 @@
+<div *ngFor="let taste of managerService.buttonList" class="dvedit_buttonSingle b-inline">
+  <a href="{{taste.url}}" style="text-decoration: none;">
+    <div tabindex="0" style="-moz-user-select: none;" role="button" title="" class="b-inline dvedit_tool-text-button">
+       <div id="dvedit-mail-button-divin1" class="b-inline dvedit_tool-text-button-outer-box">
+          <div class="b-inline dvedit_tool-text-button-inner-box">
+              {{taste.name}}
+          </div>
+       </div>
+    </div>
+  </a>
+</div>
