@@ -1,4 +1,32 @@
+<style>
+.spn-view-data__header {
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 40px;
+    border-radius: 3px;
+    margin-bottom: 1px;
+    -webkit-box-align: center;
+    align-items: center;
+    background: #fff;
+    color: #000;
+    font-family: Noto Sans,Arial,Arial,serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #f0eff0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+.spn-view-data__content {
+   padding: 20px;
+}
+</style>
 <div>
-  <h1>{{managerService.title}}</h1>
-  {{managerService.data}}
+  <div class="spn-view-data__header"><span>{{managerService.title}}</span></div>
+  <div class="spn-view-data__content" [innerHTML]="managerService.data"></div>
 </div>

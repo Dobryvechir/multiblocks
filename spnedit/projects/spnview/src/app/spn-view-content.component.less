@@ -13,9 +13,20 @@
 .spn-view-content-dialog {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   background-color: white;
-  width: 50%;
-  height: 50%;
+  width: 90%;
+  height: 90%;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
   padding: 8px;
+  overflow: hidden;
+  justify-content: space-between;
+  border-radius: 18px;
+}
+@media (max-width: 600px) {
+    .spn-view-content-dialog {
+      width: 100%;
+      height: 100%;
+      border-radius: 0px;
+    }
 }

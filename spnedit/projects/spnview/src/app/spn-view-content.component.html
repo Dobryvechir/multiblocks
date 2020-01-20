@@ -1,6 +1,10 @@
 <div class="spn-view-content-overlay" (click)="onOverlayClicked($event)">
   <div class="spn-view-content-dialog" (click)="onDialogClicked($event)">
-     <router-outlet></router-outlet>
-     <spn-view-button></spn-view-button>
+     <div style="overflow: auto;width:100%">
+         <router-outlet style="display:block;"></router-outlet>
+     </div>
+     <div class="_dvv-flex-all-center-wrap dvv-normal-space" style="flex: 0 1 100px;border-top: 1px solid #f0eff0;width:100%">
+       <spn-view-button></spn-view-button>
+     </div>
   </div>
 </div>

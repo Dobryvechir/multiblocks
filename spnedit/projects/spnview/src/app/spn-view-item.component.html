@@ -1,0 +1,15 @@
+<div [ngStyle]="{'padding-left.px':item.level*32}" class="spn-view-item__menu">
+  <div class="spn-view-item__menu-item">
+  <span *ngIf="!item.kids?.length" style="inline-block;width:20px;height:20px"><svg height="20" width="20" viewBox="0 0 31 31" xmlns="http://www.w3.org/2000/svg"><path d="M3 20L23 23L20 3z" fill="yellow" stroke="yellow" /></svg></span>
+  <span *ngIf="item.kids?.length && !item.isOpen" (click)="item.isOpen=true"><svg height="20" width="20" viewBox="0 0 31 31" xmlns="http://www.w3.org/2000/svg"><path d="M8 4 V28 L26 16 z" fill="green" stroke="yellow" /></svg></span>
+  <span *ngIf="item.kids?.length && item.isOpen" (click)="item.isOpen=false"><svg height="20" width="20" viewBox="0 0 31 31" xmlns="http://www.w3.org/2000/svg"><path d="M3 20L23 23L20 3z" fill="yellow" stroke="green" /></svg></span>
+  </div>
+  <div class="spn-view-item__menu-item">
+   <a href="#/{{item.url}}" class="spn-view-item__menu-link">{{item.title}}</a>
+  </div>
+</div>
+<ng-container *ngIf="item.kids?.length && item.isOpen">
+  <div *ngFor="let kid of item.kids">
+    <spn-view-item [(item)]="kid"></spn-view-item>
+  </div>
+</ng-container>

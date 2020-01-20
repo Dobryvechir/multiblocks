@@ -8,6 +8,7 @@ import { SpnViewButton } from './models/spn-view-button';
 import { SpnViewBlockConfig } from './models/spn-view-block-config';
 import { SpnViewContentComponent } from './spn-view-content.component';
 import { SpnEditBlocks } from './models/spn-edit-block';
+import { SpnRollerCoaster } from './spn-roller-coaster.service';
 
 @Injectable()
 export class SpnViewManagerService {
@@ -17,25 +18,29 @@ export class SpnViewManagerService {
     readonly Previous = 'Previous';
     readonly RecentPage = 'Recent Page';
     readonly Content = 'Content';
+    readonly blockName = 'Block ';
     data = '';
     title = '';
     minExpandingThreshold = 10;
+    maxChildButtonShow = 7;
     numberOfBlocks = 1;
-    currentPage = '';
     lastPage = '';
+    nextId = 100;
     currentLevels: number[] = [];
     lastLevels: number[] = [];
     urlToIdMap = {
-        "content": "0",
+        "content": "content",
     };
+    
     currentBlock: SpnEditBlocks;
     allBlocks: SpnEditBlocks[] = [];
-    buttonList: SpnViewButton[] = [{url:"#content",name:"Content"},{url:"#1_Lord_is_my_joy_hope",name:"Lord is my joy, hope"},{url:"#1_Lord_is_my_joy_hope/I_will_praise_you",name:"I will praise you forever"}];
+    buttonList: SpnViewButton[] = [];
     contentComponentRef: ComponentRef<SpnViewContentComponent>
 
     constructor(private componentFactoryResolver: ComponentFactoryResolver,
                private appRef: ApplicationRef,
-               private injector: Injector) {
+               private injector: Injector,
+               private rollerCoaster: SpnRollerCoaster) {
        const blockConfig = window['SpnViewBlockConfig'] as SpnViewBlockConfig;
        const info = blockConfig && blockConfig.textAreaId && document.getElementById(blockConfig.textAreaId) &&
            document.getElementById(blockConfig.textAreaId)['value'];
@@ -51,7 +56,9 @@ export class SpnViewManagerService {
         const componentRef = componentFactory.create(this.injector);
         this.appRef.attachView(componentRef.hostView);
         const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+        domElem.style.display = "none";
         document.body.appendChild(domElem);
+        this.rollerCoaster.popupElement = domElem;
         this.contentComponentRef = componentRef;
         window.addEventListener("hashchange", this.onContextChanged.bind(this), false);
         this.onContextChanged();
@@ -110,12 +117,21 @@ export class SpnViewManagerService {
     }
 
     private addButton(name:string, url:string) {
-        name = window.dieSeiteUbersetzungen && window.dieSeiteUbersetzungen[name] || name;
+        name = window['dieSeiteUbersetzungen'] && window['dieSeiteUbersetzungen'][name] || name;
         this.buttonList.push({name,url});
     }
 
+    private addButtonForBlock(prefix:string, block:SpnEditBlocks) {
+        if (block) {
+           if (prefix) {
+               prefix += ': ';
+           }
+           this.addButton(prefix + block.title, block.url); 
+        }
+    } 
+
     private makeContentPageInit(): void {
-        this.addButton(this.Home, '1');
+        this.addButton(this.Home, '0');
         if (this.lastPage && this.lastPage!=='1') {
            this.lastLevels = this.convertLevels(this.lastPage);
            const block = this.findCurrentBlockStart(this.lastLevels);
@@ -129,7 +145,7 @@ export class SpnViewManagerService {
               this.makeTreeAllInOneOpenState(this.allBlocks, true);
         } else {
               this.makeTreeAllInOneOpenState(this.allBlocks, false);
-              this.makeTreeSpecialBranchOpen(this.allBlocks, 0, this.lastPage);
+              this.makeTreeSpecialBranchOpen(this.allBlocks, 0, this.lastLevels);
         }
     }
 
@@ -140,7 +156,7 @@ export class SpnViewManagerService {
         }
         for(let i=0;i<n;i++) {
              blocks[i].isOpen = isOpen;
-             this.makeTreeAllInOneOpenState(blocks[i].kids);
+             this.makeTreeAllInOneOpenState(blocks[i].kids, isOpen);
         }
     }
 
@@ -154,28 +170,49 @@ export class SpnViewManagerService {
 
     private setCurrentPage(page:string): void {
         this.buttonList = [];
-        this.currentPage = page || '';
-        if (this.currentPage==='0') {
+        this.rollerCoaster.currentPage = page || '';
+        if (this.rollerCoaster.currentPage==='content') {
              this.makeContentPageInit();
+             this.rollerCoaster.updatePopupVisibility();
              return;
         }
-        this.currentLevels = this.convertLevels(this.currentPage);
-        this.currentBlock = findCurrentBlockStart(this.currentLevels);
+        this.currentLevels = this.convertLevels(this.rollerCoaster.currentPage);
+        this.currentBlock = this.findCurrentBlockStart(this.currentLevels);
         if (!this.currentBlock) {
-           this.currentPage = '';
+           this.rollerCoaster.currentPage = '0';
+           this.currentBlock = this.allBlocks[0];
+           this.currentLevels = [1];
            this.data = '';
            this.title = '';
         } else {
            this.data = this.currentBlock.info;
            this.title = this.currentBlock.title;
-           this.lastPage = this.currentPage;
+           this.lastPage = this.rollerCoaster.currentPage;
         }
         this.addButton(this.Content, 'content');
-        // TODO: as follows
-        // check Up button
-        // check Next button
-        // check Previous button
-        // check 5 child buttons
+        if (this.currentLevels.length>1) {
+              this.addButton(this.Home, '0'); 
+            const upBlock:SpnEditBlocks = this.findCurrentBlockStart(this.currentLevels.slice(0,-1));
+            if (upBlock) {
+               if (this.currentLevels.length>2) {
+                  this.addButtonForBlock(this.Up, upBlock);
+               }
+               let n = this.currentLevels[this.currentLevels.length-1];
+               this.addButtonForBlock(this.Next, upBlock.kids[n+1]);
+               this.addButtonForBlock(this.Previous, upBlock.kids[n-1]);
+            }
+        }
+        let kids = this.currentBlock.kids;
+        if (kids) {
+           let n = kids.length;
+           if (n>this.maxChildButtonShow) {
+               n = this.maxChildButtonShow;
+           }
+           for(let i=0;i<n;i++) {
+                this.addButtonForBlock('', kids[i]);
+           } 
+        }
+        this.rollerCoaster.updatePopupVisibility();
     }
 
     private findCurrentBlock(blocks: SpnEditBlocks[], level: number, currentLevels: number[]): SpnEditBlocks {
@@ -217,6 +254,9 @@ export class SpnViewManagerService {
 
     private recalculateLevels(blocks: SpnEditBlocks[], level: number, prefix: string, preurl: string): void {
         if (blocks && blocks.length) {
+            if (level<=1) {
+                preurl = '';
+            } 
             blocks.forEach((block: SpnEditBlocks, index: number) => {
                 if (!block.title) {
                     block.title = this.blockName + (this.nextId++);
@@ -229,14 +269,14 @@ export class SpnViewManagerService {
                 block.level = level;
                 const id = prefix + index;
                 block.id = id;
-                block.url=(index+1)+'_'+this.getReducedForUrl(block.title);
+                block.url=preurl + (index+1)+'_'+this.getReducedForUrl(block.title);
                 this.numberOfBlocks++;
                 this.urlToIdMap[block.url]=block.id; 
                 if (block.kids) {
                     this.recalculateLevels(block.kids, level + 1, id + "_",block.url + '/');
                 }
                 if (block === this.currentBlock) {
-                     this.currentId = id;
+                     /* this.currentId = id; */
                      this.currentLevels = this.convertLevels(id);
                 }
             });

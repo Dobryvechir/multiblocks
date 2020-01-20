@@ -7,8 +7,10 @@ import { SpnViewComponent } from './spn-view.component';
 import { SpnViewContentComponent } from './spn-view-content.component';
 import { SpnViewButtonComponent } from './spn-view-button.component';
 import { SpnViewDataComponent } from './spn-view-data.component';
+import { SpnViewItemComponent } from './spn-view-item.component';
 import { SpnViewManagerService } from './spn-view-manager.service';
 import { SpnViewTreeComponent } from './spn-view-tree.component';
+import { SpnRollerCoaster } from './spn-roller-coaster.service';
 
 @NgModule({
   declarations: [
@@ -16,13 +18,14 @@ import { SpnViewTreeComponent } from './spn-view-tree.component';
     SpnViewContentComponent,
     SpnViewButtonComponent,
     SpnViewDataComponent,
+    SpnViewItemComponent,
     SpnViewTreeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [SpnViewManagerService],
+  providers: [SpnViewManagerService, SpnRollerCoaster],
   entryComponents: [SpnViewContentComponent],
   bootstrap: [SpnViewComponent]
 })

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SpnRollerCoaster } from './spn-roller-coaster.service';
 
 @Component({
   selector: 'spn-view-content',
@@ -7,8 +8,12 @@ import { Component } from '@angular/core';
 })
 export class SpnViewContentComponent  {
 
+  constructor(private rollerCoaster: SpnRollerCoaster) {
+  }
+
   onOverlayClicked(evt: MouseEvent) {
-    // close the dialog
+    evt.stopPropagation();
+    this.rollerCoaster.removePopup(); 
   }
 
   onDialogClicked(evt: MouseEvent) {
