@@ -54,7 +54,7 @@ export class SpnEditControl {
                 window.console.log("Error: element " + this.editConfig.mainAreaId + " does not exist");
                 this.mainArea = {value: ""};
             }
-            mainBlock.info = this.mainArea.value;
+            mainBlock.info = this.refineAsSilver(this.mainArea.value);
             if (!mainBlock.title) {
                 mainBlock.title = "Main";
             }
@@ -75,9 +75,22 @@ export class SpnEditControl {
         this.chooseCurrentBlock("0");
     }
 
+    private refineAsSilver(s: string): string {
+        if (!s) {
+           return "";
+        }
+        let pre = s.indexOf("<body");
+        let preEnd = s.indexOf(">",pre);
+        let pos = s.lastIndexOf("</body>");
+        if (pre>=0 && preEnd>=0 && pos>preEnd) {
+              s = s.substring(preEnd+1, pos);
+        }
+        return window["dvatob"](s);
+    }
+
     private saveCurrentBlock(): void {
         if (this.currentBlock) {
-            const content = this.editConfig.getContent();
+            const content =this.refineAsSilver(this.editConfig.getContent());
             if (content !== this.currentBlock.info) {
                 this.currentBlock.info = content;
                 this.changed = true;
@@ -98,7 +111,7 @@ export class SpnEditControl {
         this.currentId = currentBlockId;
         this.currentLevels = currentLevels;
         if (this.currentBlock) {
-            this.editConfig.setContent(this.currentBlock.info);
+            this.editConfig.setContent(window["dvbtoa"](this.currentBlock.info));
         }
         this.separateVisibleBlocks();
     }
@@ -190,7 +203,7 @@ export class SpnEditControl {
         }
         this.cleanLevels(this.allBlocks);
         const mainBlock = Object.assign({}, this.allBlocks[0]);
-        this.mainArea.value = mainBlock.info;
+        this.mainArea.value = window["dvbtoa"](mainBlock.info);
         delete mainBlock.info;
         this.moreArea.value = JSON.stringify(mainBlock);
         this.calculateLevels();

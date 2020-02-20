@@ -185,7 +185,7 @@ export class SpnViewManagerService {
            this.data = '';
            this.title = '';
         } else {
-           this.data = this.currentBlock.info;
+           this.data = window["dvbtoa"](this.currentBlock.info);
            this.title = this.currentBlock.title;
            this.lastPage = this.rollerCoaster.currentPage;
         }

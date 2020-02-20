@@ -6,6 +6,77 @@
   <base href="/">
   <script type="text/javascript" src="/assets/v/tinymce/v4_1_2/tinymce/tinymce.min.js" charset="utf-8"></script>
   <script>
+var dvatob_table=(function(){
+    let a=[];
+    for(let i=0;i<10;i++) a[i]=String.fromCharCode(i+48); 
+    for(let i=0;i<26;i++) {
+       a[i+10]=String.fromCharCode(i+65);
+       a[i+36]=String.fromCharCode(i+97);
+    }
+    a[62]='_';
+    a[63]='!';
+    return a;
+})();
+var dvbtoa_table=(function(c){
+    let a={};
+    let n=c.length;
+    for(let i=0;i<n;i++) {
+        a[c[i]]=i;
+    }
+    return a; 
+})(dvatob_table);
+
+function dvbtoa(s) {
+   let n=s.length,f='',g=0,h=0,j=0;
+   for(let i=0;i<s.length;i++) {
+       let c = dvbtoa_table[s.charAt(i)];
+       g = (g<<6) | c;
+       h+=6;
+       if (h>=8) {
+           h-=8;
+           let d = (g>>h) & 0xff;
+           g &= 0xff;
+           if (j!=0) {
+              if (j<0) {
+                 j=d<<8;
+              } else {
+                 f+=String.fromCharCode(j | d);
+                 j=0;
+              } 
+           } else if (d==255) {
+             j=-1;
+           } else {
+              f+=String.fromCharCode(d);
+           }    
+       } 
+   }
+   return f;
+}
+
+function dvatob(s) {
+   let n=s.length,f='',g=0,h=0;
+   for(let i=0;i<s.length;i++) {
+       let c = s.charCodeAt(i);
+       if (c<0xff) {
+          g = (g<<8) | c;
+          h += 8; 
+       } else {
+          g = (((g<<8) | 0xff)<<16) | c;
+          h += 24;
+       }
+       while(h>=6){
+          h-=6;
+          f+=dvatob_table[(g>>h)&0x3f];
+       }
+       g &= 0x3f;  
+   }
+   if (h>0) {
+      g = g<<6;
+      f+=dvatob_table[(g>>h)&0x3f]; 
+   }
+   return f;
+}
+
      window.SpnEditBlockConfig = {
            mainAreaId: "SpnEditMainBlock",
            moreAreaId: "SpnEditMoreBlock",
@@ -77,9 +148,9 @@
     </textarea>
   <div style="max-width:1000px;background-color:yellow;margin:auto;border-left:2px solid #808000;border-right:2px solid #808000;border-top:2px solid #808000;padding-top:20px;">
    <spn-edit-header></spn-edit-header>
-   <div id="spnEditTextArea" style="width:800px;height:431px;">
+   <div id="spnEditTextArea" style="width:840px;height:431px;">
      <form >   
-      <textarea id="spnEditTextAreaData" class="FullFeatureTextEditor" style="width:800px;height:290px;margin:0px auto;display:block">Was magst du?</textarea>
+      <textarea id="spnEditTextAreaData" class="FullFeatureTextEditor" style="width:840px;height:290px;margin:0px auto;display:block">Was magst du?</textarea>
      </form>
    </div>  
   <spn-edit-footer></spn-edit-footer>
